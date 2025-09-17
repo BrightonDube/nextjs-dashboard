@@ -7,18 +7,15 @@ export const formatCurrency = (amount: number) => {
   });
 };
 
-export const formatDateToLocal = (
-  dateStr: string,
-  locale: string = 'en-US',
-) => {
+export const formatDateToLocal = (dateStr: string) => {
+  // Use a deterministic UTC-based date format to avoid hydration
+  // mismatches caused by differing locale or timezone on server vs client.
   const date = new Date(dateStr);
-  const options: Intl.DateTimeFormatOptions = {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  };
-  const formatter = new Intl.DateTimeFormat(locale, options);
-  return formatter.format(date);
+  // Example: Sep 16, 2025
+  const month = date.toUTCString().split(' ')[2];
+  const day = date.getUTCDate();
+  const year = date.getUTCFullYear();
+  return `${month} ${day}, ${year}`;
 };
 
 export const generateYAxis = (revenue: Revenue[]) => {
