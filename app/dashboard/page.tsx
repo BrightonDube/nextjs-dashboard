@@ -7,23 +7,36 @@ import RevenueChart from '@/app/ui/dashboard/revenue-chart';
 import { fetchCardData, fetchLatestInvoices, fetchRevenue } from '@/app/lib/data';
 
 export default async function Page() {
-  const cards = await fetchCardData();
-  const latestInvoices = await fetchLatestInvoices();
-  const revenue = await fetchRevenue();
+  try {
+    const cards = await fetchCardData();
+    const latestInvoices = await fetchLatestInvoices();
+    const revenue = await fetchRevenue();
 
-  return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-        <Card title="Collected" value={cards.totalPaidInvoices ?? cards.totalPaidInvoices} type="collected" />
-        <Card title="Pending" value={cards.totalPendingInvoices ?? cards.totalPendingInvoices} type="pending" />
-        <Card title="Total Invoices" value={cards.numberOfInvoices} type="invoices" />
-        <Card title="Total Customers" value={cards.numberOfCustomers} type="customers" />
-      </div>
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+          <Card title="Collected" value={cards.totalPaidInvoices ?? cards.totalPaidInvoices} type="collected" />
+          <Card title="Pending" value={cards.totalPendingInvoices ?? cards.totalPendingInvoices} type="pending" />
+          <Card title="Total Invoices" value={cards.numberOfInvoices} type="invoices" />
+          <Card title="Total Customers" value={cards.numberOfCustomers} type="customers" />
+        </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-6">
-        <RevenueChart revenue={revenue} />
-        <LatestInvoices latestInvoices={latestInvoices} />
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-6">
+          <RevenueChart revenue={revenue} />
+          <LatestInvoices latestInvoices={latestInvoices} />
+        </div>
       </div>
-    </div>
-  );
+    );
+  } catch (err) {
+    // Return a safe fallback UI so server errors (DB unreachable, etc.) don't
+    // cause an unhandled Server Components exception in production.
+    return (
+      <div className="space-y-6">
+        <div className="rounded-xl bg-gray-50 p-6">
+          <h2 className="text-lg font-medium">Dashboard temporarily unavailable</h2>
+          <p className="text-sm text-gray-500">We couldn't retrieve data right now. Please try again shortly.</p>
+        </div>
+      </div>
+    );
+  }
 }
