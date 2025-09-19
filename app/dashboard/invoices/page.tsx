@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import InvoicesTable from '@/app/ui/invoices/table';
 import { fetchFilteredInvoices } from '@/app/lib/data';
 

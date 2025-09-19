@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import CustomersTable from '@/app/ui/customers/table';
 import { fetchFilteredCustomers } from '@/app/lib/data';
 
