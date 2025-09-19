@@ -1,42 +1,33 @@
 
 export const dynamic = 'force-dynamic';
 
-import CardWrapper, { Card } from '@/app/ui/dashboard/cards';
+import CardWrapper from '@/app/ui/dashboard/cards';
 import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
 import RevenueChart from '@/app/ui/dashboard/revenue-chart';
-import { fetchCardData, fetchLatestInvoices, fetchRevenue } from '@/app/lib/data';
+import { Suspense } from 'react';
+import {
+  CardsSkeleton,
+  LatestInvoicesSkeleton,
+  RevenueChartSkeleton,
+} from '@/app/ui/skeletons';
 
 export default async function Page() {
-  try {
-    const cards = await fetchCardData();
-    const latestInvoices = await fetchLatestInvoices();
-    const revenue = await fetchRevenue();
-
-    return (
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-          <Card title="Collected" value={cards.totalPaidInvoices ?? cards.totalPaidInvoices} type="collected" />
-          <Card title="Pending" value={cards.totalPendingInvoices ?? cards.totalPendingInvoices} type="pending" />
-          <Card title="Total Invoices" value={cards.numberOfInvoices} type="invoices" />
-          <Card title="Total Customers" value={cards.numberOfCustomers} type="customers" />
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-6">
-          <RevenueChart revenue={revenue} />
-          <LatestInvoices latestInvoices={latestInvoices} />
-        </div>
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+        <Suspense fallback={<CardsSkeleton />}>
+          <CardWrapper />
+        </Suspense>
       </div>
-    );
-  } catch (err) {
-    // Return a safe fallback UI so server errors (DB unreachable, etc.) don't
-    // cause an unhandled Server Components exception in production.
-    return (
-      <div className="space-y-6">
-        <div className="rounded-xl bg-gray-50 p-6">
-          <h2 className="text-lg font-medium">Dashboard temporarily unavailable</h2>
-          <p className="text-sm text-gray-500">We couldn't retrieve data right now. Please try again shortly.</p>
-        </div>
+
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-6">
+        <Suspense fallback={<RevenueChartSkeleton />}>
+          <RevenueChart />
+        </Suspense>
+        <Suspense fallback={<LatestInvoicesSkeleton />}>
+          <LatestInvoices />
+        </Suspense>
       </div>
-    );
-  }
+    </div>
+  );
 }
