@@ -1,5 +1,4 @@
-
-export const dynamic = 'force-dynamic';
+// Overview can benefit from Partial Prerendering; do not force dynamic
 
 import CardWrapper from '@/app/ui/dashboard/cards';
 import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
@@ -31,3 +30,5 @@ export default async function Page() {
     </div>
   );
 }
+
+
