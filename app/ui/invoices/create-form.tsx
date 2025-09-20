@@ -10,13 +10,13 @@ import {
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
 import { createInvoice, type InvoiceFormState } from '@/app/lib/actions';
-import { useFormState } from 'react-dom';
+import React from 'react';
 
 export default function Form({ customers }: { customers: CustomerField[] }) {
   const initialState: InvoiceFormState = { errors: {}, message: null };
-  const [state, dispatch] = useFormState(createInvoice as any, initialState);
+  const [state, formAction] = React.useActionState(createInvoice as any, initialState);
   return (
-    <form action={dispatch}>
+    <form action={formAction}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Customer Name */}
         <div className="mb-4">

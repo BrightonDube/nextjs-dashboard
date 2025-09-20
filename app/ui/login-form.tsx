@@ -8,14 +8,14 @@ import {
 } from '@heroicons/react/24/outline';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from './button';
-import { useFormState } from 'react-dom';
 import { authenticate, type AuthState } from '@/app/lib/actions';
+import React from 'react';
 
 export default function LoginForm() {
   const initialState: AuthState = { error: null };
-  const [state, dispatch] = useFormState(authenticate as any, initialState);
+  const [state, formAction] = React.useActionState(authenticate as any, initialState);
   return (
-    <form action={dispatch} className="space-y-3">
+    <form action={formAction} className="space-y-3">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         <h1 className={`${lusitana.className} mb-3 text-2xl`}>
           Please log in to continue.
