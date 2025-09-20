@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { cookies } from 'next/headers';
 import bcrypt from 'bcrypt';
 
 const InvoiceSchema = z.object({
@@ -119,8 +120,20 @@ export async function authenticate(
   if (!match) {
     return { error: 'Invalid credentials.' };
   }
-
+  // Minimal demo session cookie
+  const cookieStore = await cookies();
+  cookieStore.set('session', user.id, {
+    httpOnly: true,
+    sameSite: 'lax',
+    path: '/',
+  });
   redirect('/dashboard');
+}
+
+export async function signOut(): Promise<void> {
+  const cookieStore = await cookies();
+  cookieStore.delete('session');
+  redirect('/login');
 }
 
 
